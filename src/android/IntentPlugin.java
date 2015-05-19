@@ -32,7 +32,6 @@ public class IntentPlugin extends CordovaPlugin{
             JSONObject result = new JSONObject();
             Log.d(TAG, "Got intent data" + intentData);
 
-
             if (intentAction != null) {
                 result.put("action", intentAction);
             }
@@ -45,7 +44,6 @@ public class IntentPlugin extends CordovaPlugin{
             }
             if (intentAction == "android.intent.action.SEND_MULTIPLE") {
                 ArrayList<Uri> imageUris = i.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
-
 
                 if (imageUris != null) {
                     JSONArray a = new JSONArray();
@@ -74,4 +72,5 @@ public class IntentPlugin extends CordovaPlugin{
         i.setAction("");
         i.setData(null);
     }
+
 }
