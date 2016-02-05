@@ -24,11 +24,13 @@ public class IntentPlugin extends CordovaPlugin{
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         if (action.equals("getIntentData")) {
             PluginResult.Status status = PluginResult.Status.OK;
+
             Intent i = this.cordova.getActivity().getIntent();
             Log.d(TAG, "Got intent " + i.getAction());
+
             String intentAction = i.getAction();
             String intentData = i.getDataString();
-            //Bundle extras = i.getExtras();
+
             JSONObject result = new JSONObject();
             Log.d(TAG, "Got intent data" + intentData);
 
@@ -50,7 +52,7 @@ public class IntentPlugin extends CordovaPlugin{
 
                     for (Uri uri : imageUris) {
                         a.put(uri.toString());
-                        Log.d(TAG, "eine url ist " + uri.toString());
+                        Log.d(TAG, "put URI to result: " + uri.toString());
                     }
                     result.put("uri", a);
                 }
@@ -68,6 +70,13 @@ public class IntentPlugin extends CordovaPlugin{
         return false;
     }
 
+    @Override
+    public void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Log.d(TAG, "new Intent: " + intent.getAction());
+        if (intent != null) this.cordova.getActivity().setIntent(intent);
+
+    }
     public void clearIntent(Intent i) {
         i.setAction("");
         i.setData(null);
