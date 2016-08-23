@@ -19,6 +19,7 @@ import android.util.Log;
 
 public class IntentPlugin extends CordovaPlugin{
     private final String TAG = "INTENT_PLUGIN";
+    private final String PACKAGE_NAME = "com.openexchange.mobile.mailapp.enterprise";
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
@@ -37,10 +38,17 @@ public class IntentPlugin extends CordovaPlugin{
             if (intentAction != null) {
                 result.put("action", intentAction);
             }
+
+
             if (intentAction == "android.intent.action.SEND") {
+
                 Uri fileUri = (Uri) i.getParcelableExtra(Intent.EXTRA_STREAM);
                 if (fileUri != null) {
                     Log.d(TAG, "Image URI" + fileUri.toString());
+                    if (fileUri.toString().contains(PACKAGE_NAME)) {
+                        Log.d(TAG, "Prevented sending file from own package");
+                        return false;
+                    }
                     result.put("uri", fileUri);
                 }
             }
@@ -52,6 +60,11 @@ public class IntentPlugin extends CordovaPlugin{
 
                     for (Uri uri : imageUris) {
                         a.put(uri.toString());
+
+                        if (uri.toString().contains(PACKAGE_NAME)) {
+                            Log.d(TAG, "Prevented sending file from own package");
+                            return false;
+                        }
                         Log.d(TAG, "put URI to result: " + uri.toString());
                     }
                     result.put("uri", a);
